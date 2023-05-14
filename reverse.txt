@@ -1,0 +1,269 @@
+[5/6 11:43 AM] MIRZA ASIF MAHMUD
+
+
+
+
+        .MODEL SMALL
+
+.STACK 100H
+
+.CODE
+
+MAIN PROC
+
+    CALL REVERSE_OUTPUT
+
+    MAIN ENDP
+
+ 
+
+    REVERSE_OUTPUT PROC
+
+        ;display user prompt
+
+        MOV AH, 2
+
+        MOV DL, '?'
+
+        INT 21H
+
+
+    ;initialize character count
+
+        XOR CX, CX
+
+
+    ;read a character
+
+        MOV AH, 1
+
+        INT 21H
+
+
+    ;while character is not carriage return do
+
+        WHILE_:
+
+            CMP AL, 0DH
+
+            JE END_WHILE
+
+
+            ;save character on stack and increment count
+
+            PUSH AX
+
+            INC CX
+
+
+            ;read a character
+
+            INT 21H
+
+            JMP WHILE_
+
+
+        END_WHILE:
+
+            ;go to a new line
+
+            MOV AH, 2
+
+            MOV DL, 0DH
+
+            INT 21H
+
+            MOV DL, 0AH
+
+            INT 21H
+
+
+            JCXZ EXIT ;exit if no characters read
+
+
+        ;for count times do
+
+        TOP:
+
+            POP DX
+
+            INT 21H
+
+            LOOP TOP
+
+
+        EXIT:
+
+            MOV AH, 4CH
+
+            INT 21H
+
+        RET
+
+        REVERSE_OUTPUT ENDP
+
+ 
+
+END MAIN
+
+
+
+
+
+
+
+[Saturday 9:05 PM] MIRZA ASIF MAHMUD
+
+
+
+
+upcase-lowcase.asm
+
+
+
+
+[Saturday 9:06 PM] MIRZA ASIF MAHMUD
+
+
+
+
+even odd 
+
+
+
+
+
+
+
+[Saturday 9:06 PM] MIRZA ASIF MAHMUD
+
+
+
+
+.model small
+
+ 
+
+.data
+
+msz0 db 'Enter a digit: $'
+
+msz1 db 0ah, 0dh, 'Even$'
+
+msz2 db 0ah, 0dh, 'Odd$'
+
+msz3 db 0ah, 0dh, 'Not a digit$'
+
+ 
+
+.code 
+
+MAIN PROC
+
+    MOV ax, @data
+
+    MOV ds, ax
+
+
+    LEA dx, msz0
+
+    MOV ah, 9
+
+    INT 21h
+
+
+    MOV ah, 1
+
+    INT 21h
+
+
+    CMP al, 49
+
+    JE ODD
+
+    CMP al, 51
+
+    JE ODD
+
+    CMP al, 53
+
+    JE ODD  
+
+    CMP al, 55
+
+    JE ODD
+
+    CMP al, 57
+
+    JE ODD
+
+
+    CMP al, 48
+
+    JE EVEN
+
+    CMP al, 50
+
+    JE EVEN
+
+    CMP al, 52
+
+    JE EVEN  
+
+    CMP al, 54
+
+    JE EVEN
+
+    CMP al, 56
+
+    JE EVEN
+
+
+    JMP INVALID
+
+
+    ODD:
+
+        LEA DX, msz2
+
+        MOV ah, 9
+
+        INT 21h
+
+        JMP EXIT
+
+
+    EVEN:
+
+        LEA DX, msz1
+
+        MOV ah, 9
+
+        INT 21h
+
+        JMP EXIT
+
+
+    INVALID: 
+
+        LEA DX, msz3
+
+        MOV ah, 9
+
+        INT 21h
+
+
+    EXIT:
+
+        MOV ah, 4ch
+
+        INT 21h
+
+
+    MAIN ENDP
+
+ 
+
+END MAIN
+
+

@@ -1,0 +1,507 @@
+1. Solution:
+
+org 100h
+
+ 
+.DATA
+
+ 
+                      
+.CODE
+
+    MAIN PROC ; main procedure
+        
+ 
+    
+   mov dl,2
+   
+   check1: 
+       cmp dl,1 ; Comparing with 1
+       je print_o
+       jne check2
+       jmp exit
+   
+   check2:
+       cmp dl,2 ; Comparing with 2
+       je print_e
+       jne check3
+    
+   
+   check3:
+       cmp dl,3 ; Comparing with 3
+       je print_o
+       jne check4
+       jmp exit
+   
+   
+   check4:
+       cmp dl,4 ; Comparing with 4
+       je print_e
+       jne exit
+       jmp exit
+                
+                
+   print_o: ;
+       mov ah,2
+       mov dl,'o'
+       int 21h
+       jmp exit
+       
+   print_e:
+       mov ah,2
+       mov dl,'e'
+       int 21h
+       jmp exit                   
+     
+    
+    EXIT: ; Exit block to exit to program
+        MOV AH,4CH
+        INT 21H
+
+MAIN ENDP
+END MAIN
+
+RET
+
+2. Solution:
+
+org 100h
+
+ 
+.DATA
+ 
+ 
+                      
+.CODE
+
+    MAIN PROC ; main procedure
+    
+    mov cl,2    
+    mov dl,0
+    
+    cmp cl,3 ; Comparing with 3
+    
+    jl check_dl
+     
+    jmp exit
+    
+    check_dl:
+        cmp dl,3  ; Compare with 3
+        jl print_b
+        jmp exit     
+                  
+    print_b:
+        mov ah,2  ; Printing 'b'
+        mov dl,'b'
+        int 21h 
+        jmp exit
+        
+
+    EXIT: ; Exit block to exit to program
+        MOV AH,4CH
+        INT 21H
+
+MAIN ENDP
+END MAIN
+
+RET
+
+3. Solution:
+
+org 100h
+
+ 
+.DATA 
+prompt db "Give an input: $"
+
+                      
+.CODE
+
+    MAIN PROC    ; main procedure    
+        
+        mov ax,@data ;Importing the variable
+        
+        lea dx,prompt ; Printing the message
+        mov ah,9
+        int 21h 
+        
+        mov ah,1      ; Taking input
+        int 21h
+        mov bl,al    ; Moving the value to BL to make sure it isn't altered
+        
+        sub bl,30h   ; For formatting
+         
+                 
+        mov ah,2   ; Line feeding output
+        mov dl,0Ah
+        int 21h
+    
+        mov ah,2    ; Carry return output
+        mov dl,0Dh
+        int 21h
+     
+        cmp bl,1 ; Comparing with 1
+        je print_for_1
+        jne check2
+        jmp exit
+        
+        check2:
+        cmp bl,2 ; Comparing with 2
+        je print_for_2
+        jne check3
+        jmp exit
+        
+        check3:
+        cmp bl,3 ; Comparing with 3
+        je print_for_3
+        jne print_for_others 
+        jmp exit   
+        
+    
+        print_for_1:  ; Will show the sum of 2 and 3
+            mov cl,2
+            add cl,3
+            add cl,30h   ; To show in correct format
+            
+             
+             
+            
+            mov ah,2
+            mov dl,cl
+            int 21h
+            jmp exit   
+        
+        
+        print_for_2:    ; Will show the difference between 4 and 3
+            mov cl,4
+            sub cl,3 
+            add cl,30h       ; To show in correct format
+            
+            
+            
+            mov ah,2
+            mov dl,cl
+            int 21h
+            jmp exit 
+        
+        
+        print_for_3:    ; Will show the input
+        
+            add bl,30h     ; To show in correct format
+            
+            mov ah,2
+            mov dl,bl
+            int 21h
+            jmp exit 
+        
+        print_for_others:   ; For other cases just print a character   
+        
+            mov ah,2
+            mov dl,'X'
+            int 21h
+            jmp exit 
+        
+         
+    
+    EXIT: ; Exit block to exit to program
+        MOV AH,4CH
+        INT 21H
+
+MAIN ENDP
+END MAIN
+
+RET
+
+4. Solution:
+
+org 100h
+
+.DATA 
+ 
+msg db "Printing 30 times : $"
+                      
+.CODE
+
+    MAIN PROC  ; main procedure  
+        mov ax,@data
+        mov ds,ax    
+        
+        mov cx,30 ; storing 30 in cx
+          
+        lea dx,msg
+        mov ah,9
+        int 21h  
+        
+        jmp for_loop 
+        
+        for_loop: ; Will work like a for loop of high level languages
+            mov ah,2
+            mov dl,04h  ; Diamond character
+            int 21h
+            
+            dec cx ; Decrementing the value of CX
+            cmp cx,0
+            je exit ; Exiting the loop block when CX=0
+            jne for_loop ; if not equal to 0 then iterate the loop again     
+    
+    EXIT: ; Exit block to exit to program
+        MOV AH,4CH
+        INT 21H
+
+MAIN ENDP
+END MAIN
+
+RET
+
+5. Solution:
+
+org 100h
+
+.DATA 
+                     
+.CODE
+
+    MAIN PROC   ; main procedure      
+        
+        mov cl,30
+        jmp for_loop1
+        
+        for_loop1: ;For first line
+            mov ah,2
+            mov dl,'X'
+            int 21h
+            
+            dec cl
+            cmp cl,20 ; Comparing with 20
+           ; je  for_loop2
+            jne for_loop1
+            
+            
+            mov ah,2
+            mov dl,0Ah
+            int 21h 
+                    
+            mov ah,2
+            mov dl,0Dh
+            int 21h        
+            
+        for_loop2: ;For second line
+            mov ah,2
+            mov dl,'X'
+            int 21h
+            
+            dec cl
+            cmp cl,10 ; Comparing with 10
+            ;je  for_loop3
+            jne for_loop2  
+            
+            mov ah,2 ; Printing a new line
+            mov dl,0Ah
+            int 21h 
+                    
+            mov ah,2
+            mov dl,0Dh
+            int 21h   
+            
+            
+         for_loop3: ;For third line
+         
+            mov ah,2
+            mov dl,'X'
+            int 21h
+            
+            dec cl
+            cmp cl,0 ; Comparing with 0
+            je  exit
+            jne for_loop3 
+            
+             mov ah,2
+            mov dl,0Ah ; Printing a new line
+            int 21h 
+                    
+            mov ah,2
+            mov dl,0Dh
+            int 21h           
+                   
+
+    EXIT: ; Exit block to exit to program
+        MOV AH,4CH
+        INT 21H
+
+MAIN ENDP
+END MAIN
+
+RET
+6. Solution:
+
+org 100h
+
+ 
+.DATA
+
+ 
+                      
+.CODE
+
+    MAIN PROC ; main procedure 
+  
+    input_loop:
+        mov ah,1
+        int 21h
+        
+        cmp al,0Dh ;  Comparing with character for carriage return
+        je exit     ; Program will exit when ENTER is pressed
+        jne input_loop
+             
+
+    EXIT: ; Exit block to exit to program
+        MOV AH,4CH
+        INT 21H
+
+MAIN ENDP
+END MAIN
+
+RET
+
+7. Solution:
+
+org 100h
+ 
+.DATA
+                   
+.CODE
+
+    MAIN PROC   ; main procedure 
+        
+    mov cl,0
+  
+    input_loop: ; Will take input in a loop
+        mov ah,1
+        int 21h
+        
+        inc cl
+        
+        cmp cl,5 ; Comparing with 5
+        je exit  ; exits if equal
+        jne input_loop ; if not equal then continues iterating the loop
+             
+ 
+    
+   
+    
+    EXIT: ; Exit block to exit to program
+        MOV AH,4CH
+        INT 21H
+
+MAIN ENDP
+END MAIN
+
+RET
+
+8. Solution:
+
+org 100h
+
+.DATA
+msg db  "Enter a character : $"   ; Message variables to be printed
+msg2 db 0Ah,0Dh,"Your character : $"
+
+ 
+                      
+.CODE
+
+    MAIN PROC  ; main procedure 
+        
+    mov ax,@data   ;Importing all the variables
+    mov ds,ax       
+        
+    mov al,0Ah      ;Putting a values in AL
+  
+    cmp al,2        ; Comparing AL with 2
+                  
+    jg take_char_input   ; If AL is greater than or equal to 2, take and print caharacter
+    je take_char_input
+    jl check           ; If neighter equal nor greater, go to check block
+    
+    take_char_input:   ; Block to take char input from user
+    
+    lea dx,msg         ; Printing msg variable
+    mov ah,9
+    int 21h  
+    
+    mov ah,1           ; Taking input       
+    int 21h
+    mov bl,al 
+    ;sub al,30h
+    
+    lea dx,msg2
+    mov ah,9           ; Showing output
+    int 21h  
+    
+    mov ah,2
+    mov dl,bl
+    int 21h 
+    jmp exit  
+
+    
+    check:            ; If AL is lesser than or equal to 9, take and print caharacter
+    
+    cmp al,9 ; Comparing with 9
+    jl take_char_input
+    je take_char_input
+    jg check2
+    jmp exit
+    
+    
+    check2:           ; Checking if >= 00h
+    cmp al,00         ; Comparing with 0
+    je print_c
+    jg check3
+    jmp exit
+    
+    check3:          ; Checking if  <=2Fh
+    cmp al,2Fh       ; ; Comparing with 2F
+    je print_c
+    jl print_c
+    jg check4
+    jmp exit
+    
+    
+    check4:         ; Checking if  >=3Ah
+    cmp al,3Ah      ; Comparing with '3A'
+    je print_c
+    jg check5
+    jmp exit
+    
+    check5:          ; Checking if  >=0FFh
+    cmp al,0FFh      ; Comparing with 'FF'
+    je print_c
+    jl print_c
+    jg print_n
+    jmp exit
+    
+    
+    print_c:        ; Printing 'c' if character
+    mov ah,2
+    mov dl,'c'
+    int 21h
+    jmp exit  
+    
+    print_n:     ; Printing 'n' if not a character
+    mov ah,2
+    mov dl,'n'
+    int 21h
+    jmp exit
+    
+    
+    
+   
+                      
+    EXIT: ; Exit block to exit to program
+        MOV AH,4CH   ; Exit block
+        INT 21H
+
+MAIN ENDP
+END MAIN
+
+RET

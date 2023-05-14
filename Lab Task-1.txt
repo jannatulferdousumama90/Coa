@@ -1,0 +1,193 @@
+1.Solution:
+org 100h
+
+.MODEL SMALL
+.STACK 100H
+.DATA 
+
+.CODE
+MAIN PROC
+    MOV AL,"@"
+    MOV BL,"A" 
+    
+    MOV AH,2
+    CMP AL,BL 
+    
+    JGE ELSE_:
+             
+    MOV CL,6         
+    MOV DL,CL
+    ADD DL,30H
+    
+    JMP DISPLAY:  
+    
+    ELSE_:   
+    MOV CL,5
+    MOV DL,CL
+    ADD DL,30H    
+    
+    DISPLAY:
+    INT 21H  
+    
+    MOV AH,4CH
+    INT 21H
+    MAIN ENDP
+END MAIN
+
+ret
+
+2. Solution:
+
+org 100h
+
+.MODEL SMALL
+.STACK 100H
+.DATA
+;MSG1 DB 0DH, 0AH, 'Insert$'
+;MSG2 DB 0DH, 0AH, 'Printing: $'
+.CODE
+MAIN PROC
+    MOV AX,@DATA
+    MOV DX,AX
+    
+    ;MOV AH,9
+    ;LEA DX,MSG1
+    INT 21H
+    MOV AH,1
+    INT 21H
+    
+    CMP AL,'A'
+    JE CARRIAGE_RETURN
+    CMP AL,'B'
+    JE LINE_FEED
+    JMP DOS
+    
+    CARRIAGE_RETURN:
+    MOV AH,2
+    MOV DL,0DH
+    INT 21H
+    JMP EXIT_
+    
+    LINE_FEED:
+    MOV AH,2
+    MOV DL,0AH
+    INT 21H
+    JMP EXIT_
+    
+    DOS:
+    MOV AH,4CH
+    INT 21H
+    
+    EXIT_:   
+    
+    MAIN ENDP
+END MAIN
+
+
+3. Solution:
+
+org 100h
+
+.MODEL SMALL
+.STACK 100H
+.DATA
+
+.CODE
+MAIN PROC
+    MOV AX,4
+    MOV BX,5
+    MOV CX,6
+
+    CMP AX,BX
+    JB CASE1
+    
+    CMP BX,CX
+    JB CASE2
+    
+    MOV CX,0
+    JMP END_IF
+    
+    CASE1:
+    MOV AX,0
+    JMP END_IF
+    
+    CASE2:
+    MOV BX,0
+    JMP END_IF
+    
+    END_IF:   
+    MOV AH,4CH
+    INT 21H
+    MAIN ENDP
+END MAIN
+
+ret
+
+
+4. Solution:
+
+org 100h
+.model small
+.stack 100h
+.data
+input_msg   DB 10,13,'Enter something: $'
+output_msg  DB 10,13,'You entered: $'
+again_msg   DB 10,13,'Do you want to enter again? (Y/N): $'
+invalid_msg DB 10,13,'Invalid input. Please try again.$'
+input       DB 100 DUP('$')
+
+.code
+main proc
+    MOV AX, @DATA       ; Initialize DS
+    MOV DS, AX
+
+prompt:
+    ; Prompt user for input
+    MOV AH, 09h         
+    LEA DX, input_msg  
+    INT 21h           
+
+    ; Get input from user
+    MOV AH, 0Ah        
+    MOV DX, OFFSET input
+    INT 21h            
+
+    ; Print user input
+    MOV AH, 09h         
+    LEA DX, output_msg  
+    INT 21h             
+
+    MOV DX, OFFSET input+2 
+    INT 21h             
+
+    ; Ask user to input again
+    MOV AH, 09h         
+    LEA DX, again_msg       
+    INT 21h            
+
+    ; Get input from user
+    MOV AH, 01h         
+    INT 21h             
+
+    ; Check if user wants to input again
+    CMP AL, 'Y'         
+    JE prompt           
+    CMP AL, 'y'         
+    JE prompt           
+    CMP AL, 'N'         
+    JE exit             
+    CMP AL, 'n'        
+    JE exit             
+
+    ; If input is invalid, prompt user to try again
+    MOV AH, 09h         
+    LEA DX, invalid_msg 
+    INT 21h             
+    JMP prompt          
+
+exit:
+    MOV AH, 4Ch         
+    INT 21h             
+main endp
+end main
+

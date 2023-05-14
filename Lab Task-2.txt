@@ -1,0 +1,272 @@
+1. Solution:
+
+org 100h
+.MODEL SMALL
+.STACK 100H
+.DATA
+.CODE
+MAIN PROC
+    MOV AH,1
+    INT 21H
+    MOV DL,AL
+    
+    CMP DL,31H
+    JE THEN_
+    CMP DL,33H
+    JE THEN_
+    JMP ELSE_
+    
+    THEN_:
+    MOV AH,2
+    MOV DL,'o'
+    INT 21H
+    JMP EXIT_
+    
+    ELSE_:
+    MOV AH,2
+    MOV DL,'e'
+    INT 21H
+    
+    EXIT_ :
+
+    MAIN ENDP
+END MAIN
+
+
+2. Solution:
+
+org 100h
+.MODEL SMALL
+.STACK 100H
+.DATA
+.CODE
+MAIN PROC
+    MOV AH,1
+    INT 21H
+    MOV DL,AL
+    MOV AH,1
+    INT 21H
+    MOV CL,BL
+    
+    CMP DL,33H
+    JGE EXIT_
+    CMP CL,33H
+    JGE EXIT_
+    
+    MOV DL,'b'
+    MOV AH,2
+    INT 21H
+    
+    EXIT_: 
+    MAIN ENDP
+END MAIN
+
+
+3. Solution:
+
+org 100h
+.MODEL SMALL
+.STACK 100H
+.DATA
+.CODE
+MAIN PROC
+    MOV AH,1
+    INT 21H
+    
+    CMP AL,31H
+    JE  SUM_
+    CMP AL,32H
+    JE  SUB_
+    CMP AL,33H
+    JE INPUT_
+    JMP OTHER_
+    
+    SUM_:
+    MOV AX,32H
+    ADD AX,33H
+    MOV AH,2
+    SUB AX,30H
+    MOV DX,AX
+    INT 21H
+    JMP EXIT_
+    
+    SUB_:
+    MOV AX,34H
+    SUB AX,33H
+    MOV AH,2
+    ADD AX,30H
+    MOV DX,AX
+    INT 21H
+    JMP EXIT_:
+    
+    INPUT_:
+    MOV AH,2
+    MOV DL,AL
+    INT 21H
+    JMP EXIT_:
+    
+    OTHER_:
+    MOV AH,2
+    MOV DL,'x'
+    INT 21H
+    
+    EXIT_:
+    MAIN ENDP
+END MAIN
+
+
+4. Solution:
+
+org 100h
+.MODEL SMALL
+.STACK 100H
+.DATA
+.CODE
+MAIN PROC
+    MOV CX,30
+    MOV AH,2
+    MOV DL,'*'
+    
+    FORLOOP_:
+    INT 21H
+    LOOP FORLOOP_
+    
+    MAIN ENDP
+END MAIN
+
+
+5. Solution:
+
+org 100h
+.MODEL SMALL
+.STACK 100H
+.DATA
+.CODE
+MAIN PROC
+    MOV CX,30
+    MOV AH,2
+    
+    LOOP_START:
+    MOV DL,'x'
+    INT 21H
+    DEC CX
+    CMP CX,20
+    JNZ SKIP_NL
+    MOV DL,0AH
+    INT 21H
+    MOV DL,0DH
+    INT 21H
+    
+    SKIP_NL:
+    CMP CX,10
+    JNZ SKIP_SP
+    MOV DL,0AH
+    INT 21H
+    MOV DL,0DH
+    INT 21H
+    
+    SKIP_SP:
+    CMP CX,0
+    JNZ LOOP_START
+    
+    MAIN ENDP
+END MAIN
+
+
+6. Solution:
+
+org 100h
+.MODEL SMALL
+.STACK 100H
+.DATA
+.CODE
+MAIN PROC
+    RUN:
+    MOV AH,1
+    INT 21H
+    
+    CMP AL,0DH
+    JL RUN
+    JE END_CONDITION
+    JG RUN
+    
+    END_CONDITION:
+    
+    MAIN ENDP
+END MAIN
+
+7. Solution:
+
+org 100h
+.MODEL SMALL
+.STACK 100H
+.DATA
+.CODE
+MAIN PROC  
+    
+    MOV AH,1
+    INT 21H   
+    
+    MOV CL,1
+    
+    CHECK:
+    CMP CL,5  
+    JG EXIT 
+    INC CL
+    JMP CHECK  
+      
+    EXIT:
+    MAIN ENDP
+END MAIN
+
+8. Solution:
+
+org 100h
+.MODEL SMALL
+.STACK 100H
+.DATA
+MSG DB 0DH, 0AH, 'Type a Character: $'
+.CODE
+MAIN PROC
+    MOV AX,@DATA
+    MOV DS,AX
+    
+    MOV AH,1
+    INT 21H
+    
+    CMP AL,32H
+    JBE ELSE_
+    CMP AL,39H
+    JAE ELSE_
+    JMP THEN_
+    
+    THEN_:
+    MOV AH,9
+    LEA DX,MSG
+    INT 21H
+    MOV AH,1
+    INT 21H
+    MOV AH,2
+    MOV DL,AL
+    INT 21H
+    JMP EXIT_
+    
+    ELSE_:
+    CMP AL,'c'
+    JE PRINT_C
+    jmp PRINT_N
+    
+    PRINT_C:
+    MOV AH,2
+    MOV DL,'c'
+    INT 21H
+    JMP EXIT_
+    
+    PRINT_N:
+    MOV AH,2
+    MOV DL,'n'
+    INT 21H
+    
+    EXIT_:   
+    MAIN ENDP
+END MAIN
